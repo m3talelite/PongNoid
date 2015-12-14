@@ -4,18 +4,23 @@ using System.Collections;
 public abstract class Block : MonoBehaviour {
     protected int toughness;
     protected bool hasSpecial;
+    protected bool isBreakable;
+    public abstract void GetPowerUp();
 
     public void DecreaseToughness()
     {
-        if (toughness <= 0)
+        if (isBreakable && !IsAlive())
         {
-            Destroy(this);
+            Destroy(this.gameObject);
         }
-        else
+        else if (isBreakable)
         {
             --toughness;
         }
     }
 
-    public abstract void OnCollision();
+    public bool IsAlive()
+    {
+        return isBreakable ? (toughness > 0 ? true : false) : false;
+    }
 }

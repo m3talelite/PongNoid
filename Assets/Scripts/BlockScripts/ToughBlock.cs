@@ -2,18 +2,15 @@
 using System.Collections;
 using System;
 
-public class BasicBlock : Block{
-    
+public class ToughBlock : Block {
     // Use this for initialization
     void Start () {
-        toughness = 1;
-	}
-	
+        toughness = 5;
+    }
     void OnCollisionEnter(Collision collision)
     {
         DecreaseToughness();
     }
-
     public override void GetPowerUp()
     {
         throw new NotImplementedException();
