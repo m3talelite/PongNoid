@@ -45,17 +45,17 @@ public class MenuScript : MonoBehaviour {
     }
     public void PlayLevelEasy()
     {
-        //TODO add difficulty switch
+        PlayerPrefs.SetInt("Difficulty", 0);
         Application.LoadLevel(1);
     }
     public void PlayLevelMedium()
     {
-        //TODO add difficulty switch
-        Application.LoadLevel("PongNoidLevel");
+        PlayerPrefs.SetInt("Difficulty", 1);
+        Application.LoadLevel(1);
     }
     public void PlayLevelHard()
     {
-        //TODO add difficulty switch
-        Application.LoadLevel("PongNoidLevel");
+        PlayerPrefs.SetInt("Difficulty", 2);
+        Application.LoadLevel(1);
     }
 }
