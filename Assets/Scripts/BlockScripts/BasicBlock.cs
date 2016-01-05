@@ -6,6 +6,7 @@ public class BasicBlock : Block{
     
     // Use this for initialization
     void Start () {
+        isBreakable = true;
         toughness = 1;
 	}
 	

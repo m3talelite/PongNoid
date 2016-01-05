@@ -19,7 +19,7 @@ public class PaddleController : MonoBehaviour {
                 transform.localScale = new Vector3(0.25f, 2.5f, 0.5f);
                 break;
             case 2:
-                transform.localScale = new Vector3(0.25f, 2.5f, 0.5f);
+                transform.localScale = new Vector3(0.25f, 1.5f, 0.5f);
                 break;
             default:
                 transform.localScale = new Vector3(0.25f, 4.0f, 0.5f);
