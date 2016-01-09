@@ -13,6 +13,13 @@ public class BallController : MonoBehaviour {
 
     void Start()
     {
+        switch (PlayerPrefs.GetInt("Difficulty")) {
+            case 0: speed = 200.0f; break;
+            case 1: speed = 200.0f; break;
+            case 2: speed = 250.0f; break;
+            default: speed = 200.0f; break;
+        }
+
         direction = owner.tag.Equals("PaddlePlayerOne") ? 1.0f : -1.0f;
         body = GetComponent<Rigidbody>();
     }
@@ -35,13 +42,30 @@ public class BallController : MonoBehaviour {
         {
             MoveBallOnPaddle();
         }
+        //TODO::Remove this later!
+        if (Input.GetButtonDown("Test"))
+        {
+            body.AddForce(0,0,1.0f);
+            Debug.Log("Added test force");
+        }
     }
 
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag.Equals("PaddlePlayerOne") || collision.gameObject.tag.Equals("PaddlePlayerTwo"))
         {
+            //Todo check if works maybe replace?
+            GameObject paddle = collision.gameObject;
+            Vector3 v = body.velocity;
+            v.Normalize();
+            float dotOfvn = Vector3.Dot(v, (direction == 1.0f ? Vector3.left : Vector3.right));
+
+            Vector3 R = new Vector3();
+            R += -2 * dotOfvn * (direction == 1.0f ? Vector3.left : Vector3.right);
+            //TODO: finish method 
             Debug.Log("Ball hit paddle");
+
+
         }
         if (collision.gameObject.tag.Equals("Block"))
         {
@@ -57,7 +81,10 @@ public class BallController : MonoBehaviour {
         *   coef = (ball.y - paddle.y) / (paddle.height * 0.5) // this will give you a number between -1 (top) and 1 (bottom)
         *   ball.speedY  = MAX_Y_SPEED * coef
         */
-        body.AddForce(speed * direction, speed, 0);
+        float maxSpeedY = 150.0f;
+        float coeff = (transform.localPosition.y - owner.transform.localPosition.y) / (owner.transform.localScale.y * 0.5f);
+        Debug.Log("Logging start coeff: " + coeff); 
+        body.AddForce(speed * direction, maxSpeedY * coeff, 0);
     }
 
     void MoveBallOnPaddle()
