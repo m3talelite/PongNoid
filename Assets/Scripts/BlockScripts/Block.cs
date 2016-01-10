@@ -9,13 +9,11 @@ public abstract class Block : MonoBehaviour {
 
     public void DecreaseToughness()
     {
-        if (isBreakable && !IsAlive())
-        {
-            Destroy(this.gameObject);
-        }
-        else if (isBreakable)
-        {
+        if (isBreakable) {
             --toughness;
+        }
+        if (isBreakable && !IsAlive()) {
+            Destroy(this.gameObject);
         }
     }
 
