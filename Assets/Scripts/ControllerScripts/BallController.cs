@@ -54,18 +54,12 @@ public class BallController : MonoBehaviour {
     {
         if (collision.gameObject.tag.Equals("PaddlePlayerOne") || collision.gameObject.tag.Equals("PaddlePlayerTwo"))
         {
-            //Todo check if works maybe replace?
             GameObject paddle = collision.gameObject;
-            Vector3 v = body.velocity;
-            v.Normalize();
-            float dotOfvn = Vector3.Dot(v, (direction == 1.0f ? Vector3.left : Vector3.right));
-
-            Vector3 R = new Vector3();
-            R += -2 * dotOfvn * (direction == 1.0f ? Vector3.left : Vector3.right);
-            //TODO: finish method 
-            Debug.Log("Ball hit paddle");
-
-
+            float maxSpeedY = 2.0f;
+            float coeff = (transform.localPosition.y - paddle.transform.localPosition.y) / (paddle.transform.localScale.y * 0.5f);
+            if (coeff != 0 && body.velocity.y != 0) {
+                body.velocity = new Vector3(body.velocity.x, coeff * maxSpeedY + body.velocity.y, body.velocity.z);
+            }
         }
         if (collision.gameObject.tag.Equals("Block"))
         {
@@ -76,11 +70,6 @@ public class BallController : MonoBehaviour {
 
     void PerformMovement()
     {
-        //TODO: Calculate start angle
-        /*  MAX_Y_SPEED = 30 // the maximum speed the ball could have on the Y axis
-        *   coef = (ball.y - paddle.y) / (paddle.height * 0.5) // this will give you a number between -1 (top) and 1 (bottom)
-        *   ball.speedY  = MAX_Y_SPEED * coef
-        */
         float maxSpeedY = 150.0f;
         float coeff = (transform.localPosition.y - owner.transform.localPosition.y) / (owner.transform.localScale.y * 0.5f);
         Debug.Log("Logging start coeff: " + coeff); 
