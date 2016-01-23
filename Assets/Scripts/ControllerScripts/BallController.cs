@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System;
 
@@ -10,6 +11,10 @@ public class BallController : MonoBehaviour {
     private Rigidbody body;
     private float direction = 0;
     private bool ballIsActive = false;
+	private bool isInCollision = false;
+
+	private int playerScore = 0;
+	public Text playerScoreText;
 
     void Start()
     {
@@ -22,19 +27,19 @@ public class BallController : MonoBehaviour {
 
         direction = owner.tag.Equals("PaddlePlayerOne") ? 1.0f : -1.0f;
         body = GetComponent<Rigidbody>();
+
+		UpdatePlayerScore ();
     }
 	
 	// Update is called once per frame
 	void Update () {
         if (Input.GetButtonDown("ShootOne") && !ballIsActive && owner.tag.Equals("PaddlePlayerOne"))
         {
-            Debug.Log("Entered Shoot One trigger");
             ballIsActive = true;
             PerformMovement();
         }
         if (Input.GetButtonDown("ShootTwo") && !ballIsActive && owner.tag.Equals("PaddlePlayerTwo"))
         {
-            Debug.Log("entered Shoot Two Trigger");
             ballIsActive = true;
             PerformMovement();
         }
@@ -61,18 +66,47 @@ public class BallController : MonoBehaviour {
                 body.velocity = new Vector3(body.velocity.x, coeff * maxSpeedY + body.velocity.y, body.velocity.z);
             }
         }
-        if (collision.gameObject.tag.Equals("Block"))
-        {
-            //Add Points?
-            Debug.Log("Block hit");
-        }
     }
+
+	void OnTriggerEnter(Collider collider){
+		if (collider.gameObject.tag.Equals("Block"))
+		{
+			body.velocity = new Vector3(body.velocity.x * -1, body.velocity.y, body.velocity.z);
+
+			if (collider.gameObject.GetComponent<BasicBlock>() is BasicBlock) {
+				BasicBlock block = collider.gameObject.GetComponent<BasicBlock>();
+				block.DecreaseToughness();
+
+				if (block.getIsBreakable() && block.getToughness() == 0){
+					++playerScore;
+					UpdatePlayerScore ();
+					Destroy (collider.gameObject);
+				}
+			}
+
+			if (collider.gameObject.GetComponent<ToughBlock>()is ToughBlock){
+				ToughBlock block = collider.gameObject.GetComponent<ToughBlock>();
+				block.DecreaseToughness();
+
+				if(block.getIsBreakable() && block.getToughness() == 0) {
+					playerScore += 5;
+					UpdatePlayerScore ();
+					Destroy (collider.gameObject);
+				}
+			}
+
+			Debug.Log(playerScore);
+		}
+	}
+
+	void UpdatePlayerScore() {
+		playerScoreText.text = playerScore.ToString ();
+	}
 
     void PerformMovement()
     {
         float maxSpeedY = 150.0f;
         float coeff = (transform.localPosition.y - owner.transform.localPosition.y) / (owner.transform.localScale.y * 0.5f);
-        Debug.Log("Logging start coeff: " + coeff); 
         body.AddForce(speed * direction, maxSpeedY * coeff, 0);
     }
 
@@ -81,8 +115,8 @@ public class BallController : MonoBehaviour {
         if (transform.localPosition.y < owner.transform.localPosition.y + (owner.transform.localScale.y / 2)
             && transform.localPosition.y > owner.transform.localPosition.y - (owner.transform.localScale.y / 2))
         {
-            Debug.Log("On the paddle");
-        }
+        
+		}
         else
         {
             transform.localPosition = new Vector3(transform.localPosition.x, CalculateClosest(), transform.localPosition.z);

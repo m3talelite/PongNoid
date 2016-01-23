@@ -9,11 +9,6 @@ public class BasicBlock : Block{
         isBreakable = true;
         toughness = 1;
 	}
-	
-    void OnCollisionEnter(Collision collision)
-    {
-        DecreaseToughness();
-    }
 
     public override void GetPowerUp()
     {

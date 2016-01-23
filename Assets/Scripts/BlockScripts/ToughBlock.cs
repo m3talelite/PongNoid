@@ -8,10 +8,6 @@ public class ToughBlock : Block {
         isBreakable = true;
         toughness = 5;
     }
-    void OnCollisionEnter(Collision collision)
-    {
-        DecreaseToughness();
-    }
     public override void GetPowerUp()
     {
         throw new NotImplementedException();

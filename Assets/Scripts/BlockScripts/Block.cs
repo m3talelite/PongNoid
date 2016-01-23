@@ -12,13 +12,17 @@ public abstract class Block : MonoBehaviour {
         if (isBreakable) {
             --toughness;
         }
-        if (isBreakable && !IsAlive()) {
-            Destroy(this.gameObject);
-        }
     }
 
     public bool IsAlive()
     {
         return isBreakable ? (toughness > 0 ? true : false) : false;
     }
+
+	public bool getIsBreakable(){
+		return isBreakable;
+	}
+	public int getToughness(){
+		return toughness;
+	}
 }
