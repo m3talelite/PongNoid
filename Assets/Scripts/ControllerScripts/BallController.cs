@@ -1,7 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
-using System;
 
 public class BallController : MonoBehaviour {
 
@@ -12,9 +9,6 @@ public class BallController : MonoBehaviour {
     private float direction = 0;
     private bool ballIsActive = false;
 	private bool isInCollision = false;
-
-	private int playerScore = 0;
-	public Text playerScoreText;
 
     void Start()
     {
@@ -27,12 +21,21 @@ public class BallController : MonoBehaviour {
 
         direction = owner.tag.Equals("PaddlePlayerOne") ? 1.0f : -1.0f;
         body = GetComponent<Rigidbody>();
-
-		UpdatePlayerScore ();
+        if (null != owner.GetComponent<PaddleAIController>())
+        {
+            ballIsActive = true;
+            float random = (Random.value * speed) - speed/2;
+            PeformMovement(random);
+        }
     }
 	
 	// Update is called once per frame
 	void Update () {
+        if (GameManager.isLaunchPressed && !ballIsActive && owner.tag.Equals("PaddlePlayerOne"))
+        {
+            ballIsActive = true;
+            PerformMovement();
+        }
         if (Input.GetButtonDown("ShootOne") && !ballIsActive && owner.tag.Equals("PaddlePlayerOne"))
         {
             ballIsActive = true;
@@ -46,12 +49,6 @@ public class BallController : MonoBehaviour {
         if (!ballIsActive)
         {
             MoveBallOnPaddle();
-        }
-        //TODO::Remove this later!
-        if (Input.GetButtonDown("Test"))
-        {
-            body.AddForce(0,0,1.0f);
-            Debug.Log("Added test force");
         }
     }
 
@@ -78,8 +75,8 @@ public class BallController : MonoBehaviour {
 				block.DecreaseToughness();
 
 				if (block.getIsBreakable() && block.getToughness() == 0){
-					++playerScore;
-					UpdatePlayerScore ();
+                    PaddleController script = owner.GetComponent<PaddleController>();
+                    script.IncreaseScore(block.getPoint());
 					Destroy (collider.gameObject);
 				}
 			}
@@ -89,18 +86,12 @@ public class BallController : MonoBehaviour {
 				block.DecreaseToughness();
 
 				if(block.getIsBreakable() && block.getToughness() == 0) {
-					playerScore += 5;
-					UpdatePlayerScore ();
-					Destroy (collider.gameObject);
+                    PaddleController script = owner.GetComponent<PaddleController>();
+                    script.IncreaseScore(block.getPoint());
+                    Destroy (collider.gameObject);
 				}
 			}
-
-			Debug.Log(playerScore);
 		}
-	}
-
-	void UpdatePlayerScore() {
-		playerScoreText.text = playerScore.ToString ();
 	}
 
     void PerformMovement()
@@ -108,6 +99,11 @@ public class BallController : MonoBehaviour {
         float maxSpeedY = 150.0f;
         float coeff = (transform.localPosition.y - owner.transform.localPosition.y) / (owner.transform.localScale.y * 0.5f);
         body.AddForce(speed * direction, maxSpeedY * coeff, 0);
+    }
+
+    void PeformMovement(float i)
+    {
+        body.AddForce(speed * direction, i, 0);
     }
 
     void MoveBallOnPaddle()
@@ -135,7 +131,6 @@ public class BallController : MonoBehaviour {
             Difupper *= -1.0f;
         if (downer < 0)
             Difdowner *= -1.0f;
-        
 
         float origin = transform.localPosition.y;
 
@@ -144,4 +139,10 @@ public class BallController : MonoBehaviour {
 
         return distUp > distDown ? downer : upper;
     }
+
+    public void StartAiBall()
+    {
+
+    }
+
 }

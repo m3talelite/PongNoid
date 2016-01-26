@@ -3,6 +3,7 @@ using System.Collections;
 
 public abstract class Block : MonoBehaviour {
     protected int toughness;
+    protected int point;
     protected bool hasSpecial;
     protected bool isBreakable;
     public abstract void GetPowerUp();
@@ -25,4 +26,8 @@ public abstract class Block : MonoBehaviour {
 	public int getToughness(){
 		return toughness;
 	}
+    public int getPoint()
+    {
+        return point;
+    }
 }

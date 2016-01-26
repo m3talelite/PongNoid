@@ -7,6 +7,7 @@ public class ToughBlock : Block {
     void Start () {
         isBreakable = true;
         toughness = 5;
+        point = 3;
     }
     public override void GetPowerUp()
     {

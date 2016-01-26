@@ -8,6 +8,7 @@ public class BasicBlock : Block{
     void Start () {
         isBreakable = true;
         toughness = 1;
+        point = 1;
 	}
 
     public override void GetPowerUp()
